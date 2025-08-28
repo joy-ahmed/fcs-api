@@ -1,4 +1,3 @@
-from time import timezone
 from django.db import models
 from django.conf import settings
 
@@ -43,7 +42,7 @@ class Transaction(models.Model):
     amount = models.DecimalField(max_digits=14, decimal_places=2)
     type = models.CharField(max_length=10, choices=TYPE_CHOICES)
     notes = models.TextField(blank=True)
-    date = models.DateField(default=timezone.now)
+    date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

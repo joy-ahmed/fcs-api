@@ -56,4 +56,4 @@ class GoalSerializer(serializers.ModelSerializer):
         read_only_fields = ('user', 'created_at', 'updated_at')
 
     def get_proccess(self, obj):
-        return obj.progress_pct()
+        return obj.progress_pct() 

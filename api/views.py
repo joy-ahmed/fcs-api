@@ -8,6 +8,7 @@ from .serializers import (
     BudgetSerializer, GoalSerializer, RegisterSerializer
 )
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 
 class RegisterViewSet(viewsets.GenericViewSet):
     serializer_class = RegisterSerializer
@@ -17,6 +18,17 @@ class RegisterViewSet(viewsets.GenericViewSet):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class MeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        return Response({
+            "id": user.id,
+            "email": user.email,
+            "username": user.username,
+        })
 
 class AccountViewSet(viewsets.ModelViewSet):
     serializer_class = AccountSerializer

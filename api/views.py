@@ -1,13 +1,13 @@
 from rest_framework import viewsets, permissions, filters, status
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Account, Category, Transaction, Budget, Goal
 from .serializers import (
     AccountSerializer, CategorySerializer, TransactionSerializer,
-    BudgetSerializer, GoalSerializer, RegisterSerializer
+    BudgetSerializer, GoalSerializer, RegisterSerializer, User
 )
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
 
 class RegisterViewSet(viewsets.GenericViewSet):
@@ -29,6 +29,25 @@ class MeView(APIView):
             "email": user.email,
             "username": user.username,
         })
+    
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def check_user_exists(request):
+    """
+    Check if a username or email already exists.
+    Usage: /auth/check-user/?username=foo&email=bar@example.com
+    """
+    username = request.GET.get("username")
+    email = request.GET.get("email")
+    exists = False
+
+    if username and User.objects.filter(username=username).exists():
+        exists = True
+    if email and User.objects.filter(email=email).exists():
+        exists = True
+
+    return Response({"exists": exists})
 
 class AccountViewSet(viewsets.ModelViewSet):
     serializer_class = AccountSerializer

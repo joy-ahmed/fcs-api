@@ -55,13 +55,25 @@ class TransactionViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
     filterset_fields = ['type', 'category__id', 'date']
-    search_fields = ['note']
+    search_fields = ['notes']
 
     def get_queryset(self):
         return Transaction.objects.filter(user=self.request.user).order_by('-date')
 
     def perform_create(self, serializer):
+        # ✅ Save the transaction
         serializer.save(user=self.request.user)
+
+        # ✅ Access the saved instance
+        transaction = serializer.instance  
+        account = transaction.account
+
+        if transaction.type == "income":
+            account.balance = str(float(account.balance) + float(transaction.amount))
+        elif transaction.type == "expense":
+            account.balance = str(float(account.balance) - float(transaction.amount))
+
+        account.save()
 
 class BudgetViewSet(viewsets.ModelViewSet):
     serializer_class = BudgetSerializer

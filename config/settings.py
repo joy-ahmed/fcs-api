@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-9i)5nc(23l(##1^kso6@&r=bfcvjl&iyt%)a%6&d)okkieubo-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["fcs-api.onrender.com", "https://fcs-api.onrender.com", "localhost", "127.0.0.1"]
 
 
 # Application definition
